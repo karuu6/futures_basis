@@ -5,12 +5,12 @@ def binance_resample(file: str, frequency: int):
     """
     Resamples the given CSV file containing Binance trades.
 
-    :param file str: The path to the CSV file containing the data.
-    :param frequency int: The resampling frequency in seconds.
-    :return: A generator that yields time-sampled bars
+    Args:
+        file (str): The path to the CSV file containing the data.
+        frequency (int): The resampling frequency in seconds.
 
-    :rtype:
-        dict: A dictionary containing the resampled data with the following keys:
+    Returns:
+        generator: A generator that yields time-sampled bars as dictionaries with the following keys:
             - 'time': The start time of the resampled period.
             - 'open': The opening price of the resampled period.
             - 'high': The highest price during the resampled period.
@@ -18,6 +18,7 @@ def binance_resample(file: str, frequency: int):
             - 'close': The closing price of the resampled period.
             - 'volume': The total volume traded during the resampled period.
             - 'buyer_aggressor_volume': The volume of trades where the buyer was the aggressor during the resampled period.
+
     Note:
         The input CSV file is expected to have the following columns:
             - 'time': The timestamp of the trade in milliseconds.
