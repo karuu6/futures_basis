@@ -1,0 +1,12 @@
+# vscode
+.vscode
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# data
+*.zip
+*.csv
