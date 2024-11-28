@@ -28,7 +28,7 @@ class Period(Enum):
 BASE_URL = 'https://data.binance.vision/data'
 
 
-def generate_url(period: Period, pair: str, pair_type: PairType, date: datetime | str, futures_type: Optional[FuturesType]) -> str:
+def generate_url(period: Period, pair: str, pair_type: PairType, date: datetime, futures_type: Optional[FuturesType]) -> str:
     """
     Generate the URL for downloading Binance market data.
 
