@@ -79,8 +79,18 @@ def binance_resample(file: str, frequency: int):
                 hi = max(hi, p)
                 lo = min(lo, p)
 
+        yield {
+            'time': t0,
+            'open': op,
+            'high': hi,
+            'low': lo,
+            'close': cl,
+            'volume': sz,
+            'buyer_aggressor_volume': ag
+        }
+
 
 if __name__ == '__main__':
-    for bar in binance_resample('data/ETHUSDT-trades-2024-11-11.csv', 60):
+    for bar in binance_resample('data/ETHUSDT-trades-2024-11-11.csv', 600):
         print(bar)
         input()
