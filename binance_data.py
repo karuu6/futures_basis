@@ -4,20 +4,23 @@ import argparse
 import tempfile
 from enum import Enum
 from typing import Optional
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 class PairType(Enum):
+    """Enumeration for pair types."""
     SPOT = 'spot'
     FUTURES = 'futures'
 
 
 class FuturesType(Enum):
+    """Enumeration for futures types."""
     COINM = 'cm'
     USDM = 'um'
 
 
 class Period(Enum):
+    """Enumeration for data periods."""
     DAILY = 'daily'
     MONTHLY = 'monthly'
 
@@ -26,6 +29,19 @@ BASE_URL = 'https://data.binance.vision/data'
 
 
 def generate_url(period: Period, pair: str, pair_type: PairType, date: datetime | str, futures_type: Optional[FuturesType]) -> str:
+    """
+    Generate the URL for downloading Binance market data.
+
+    Args:
+        period (Period): The data period (daily or monthly).
+        pair (str): The trading pair.
+        pair_type (PairType): The type of pair (spot or futures).
+        date (datetime | str): The date for the data.
+        futures_type (Optional[FuturesType]): The type of futures (required if pair_type is FUTURES).
+
+    Returns:
+        str: The generated URL.
+    """
     if pair_type == PairType.FUTURES and futures_type is None:
         raise ValueError('futures_type is required for `FUTURES` pair type')
 
@@ -40,6 +56,13 @@ def generate_url(period: Period, pair: str, pair_type: PairType, date: datetime 
 
 
 def download_file(url: str, output_path: str) -> None:
+    """
+    Download a file from a URL.
+
+    Args:
+        url (str): The URL to download the file from.
+        output_path (str): The path to save the downloaded file.
+    """
     response = requests.get(url, stream=True)
     if response.status_code != 200:
         raise ValueError(
@@ -51,11 +74,21 @@ def download_file(url: str, output_path: str) -> None:
 
 
 def unzip_file(zip_path: str, output_dir: str) -> None:
+    """
+    Unzip a zip file to a specified directory.
+
+    Args:
+        zip_path (str): The path to the zip file.
+        output_dir (str): The directory to extract the contents to.
+    """
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
         zip_ref.extractall(output_dir)
 
 
 if __name__ == '__main__':
+    """
+    Main entry point for the script. Parses arguments and downloads/unzips Binance market data.
+    """
     parser = argparse.ArgumentParser(
         prog='Binance Market Data Utility',
         description='Download Binance market data',
