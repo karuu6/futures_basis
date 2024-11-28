@@ -1,5 +1,6 @@
 import csv
 
+
 def binance_resample(file: str, frequency: int):
     """
     Resamples the given CSV file containing Binance trades.
@@ -33,7 +34,7 @@ def binance_resample(file: str, frequency: int):
     sz = None
     ag = None
 
-    frequency = frequency * 1000 # convert to milliseconds
+    frequency = frequency * 1000  # convert to milliseconds
     with open(file, 'r') as f:
         reader = csv.DictReader(f)
         for row in reader:
@@ -51,7 +52,7 @@ def binance_resample(file: str, frequency: int):
                 sz = q
                 ag = q * a
 
-            elif t > t0 + frequency: # binance data is in milliseconds
+            elif t > t0 + frequency:  # binance data is in milliseconds
                 yield {
                     'time': t0,
                     'open': op,
