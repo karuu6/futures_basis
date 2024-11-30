@@ -1,4 +1,51 @@
 import csv
+import gzip
+import shutil
+import zipfile
+import requests
+
+
+def download_file(url: str, output_path: str) -> None:
+    """
+    Download a file from a URL.
+
+    Args:
+        url (str): The URL to download the file from.
+        output_path (str): The path to save the downloaded file.
+    """
+    response = requests.get(url, stream=True)
+    if response.status_code != 200:
+        raise ValueError(
+            'Error downloading file, status code: ', response.status_code)
+
+    with open(output_path, 'wb') as f:
+        for chunk in response.iter_content(1024 * 64):  # 64KB chunks
+            f.write(chunk)
+
+
+def unzip_file(zip_path: str, output_dir: str) -> None:
+    """
+    Unzip a zip file to a specified directory.
+
+    Args:
+        zip_path (str): The path to the zip file.
+        output_dir (str): The directory to extract the contents to.
+    """
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        zip_ref.extractall(output_dir)
+
+
+def gunzip_file(gzip_path: str, output_path: str) -> None:
+    """
+    Gunzip a gzip file to a specified directory.
+
+    Args:
+        gzip_path (str): The path to the gzip file.
+        output_path (str): The path to extract the contents to.
+    """
+    with gzip.open(gzip_path, 'rb') as gzip_ref:
+        with open(output_path, 'wb') as f_out:
+            shutil.copyfileobj(gzip_ref, f_out)
 
 
 def binance_resample(file: str, frequency: int):
@@ -91,6 +138,6 @@ def binance_resample(file: str, frequency: int):
 
 
 if __name__ == '__main__':
-    for bar in binance_resample('data/ETHUSDT-trades-2024-11-11.csv', 600):
+    for bar in binance_resample('market_data/BTCUSDT-trades-2024-11-11.csv', 600):
         print(bar)
         input()

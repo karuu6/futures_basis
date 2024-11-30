@@ -14,20 +14,16 @@ pip install -r requirements.txt
 
 ### Fetching Data
 
-To fetch data from Binance, use the `binance_data.py` script. Below is an example of how to use the script to fetch monthly futures trades:
+To download market data, use the `dl.py` script. Below is an example of how to use the script to fetch monthly futures trades from Binance:
 
 ```bash
-python binance_data.py data/ 2024-10-22 BTCUSDT monthly -f -t um
+python dl.py binance -fum BTCUSDT futures 2024-11-01 daily market_data/
 ```
 
 ### Example
 
-Fetch daily spot trades for ETHUSDT
+Fetch daily spot trades for ETHUSDT on Bybit
 
 ```bash
-python binance_data.py data/ 2024-10-22 BTCUSDT monthly -f -t um
+python dl.py bybit ETHUSDT spot 2024-10-22 daily market_data/
 ```
-
-### Output
-
-The script will store the CSV data in specified directory.
