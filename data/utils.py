@@ -19,7 +19,7 @@ def download_file(url: str, output_path: str) -> None:
             'Error downloading file, status code: ', response.status_code)
 
     with open(output_path, 'wb') as f:
-        for chunk in response.iter_content(1024 * 64):  # 64KB chunks
+        for chunk in response.iter_content(1024 * 1024):  # 1Mib chunks
             f.write(chunk)
 
 
@@ -48,7 +48,7 @@ def gunzip_file(gzip_path: str, output_path: str) -> None:
             shutil.copyfileobj(gzip_ref, f_out)
 
 
-def binance_resample(file: str, frequency: int):
+def binance_resample(file: str, frequency: int, fieldnames=None):
     """
     Resamples the given CSV file containing Binance trades.
 
@@ -84,7 +84,7 @@ def binance_resample(file: str, frequency: int):
 
     frequency = frequency * 1000  # convert to milliseconds
     with open(file, 'r') as f:
-        reader = csv.DictReader(f)
+        reader = csv.DictReader(f, fieldnames=fieldnames)
         for row in reader:
             t = int(row['time'])
             q = float(row['qty'])
@@ -138,6 +138,6 @@ def binance_resample(file: str, frequency: int):
 
 
 if __name__ == '__main__':
-    for bar in binance_resample('market_data/BTCUSDT-trades-2024-11-11.csv', 600):
+    for bar in binance_resample('market_data/spot/BTCUSDT-trades-2024-11.csv', 600, fieldnames=['trade_id', 'price', 'qty', 'quote_qty', 'time', 'is_buyer_maker', 'is_best_match']):
         print(bar)
         input()
