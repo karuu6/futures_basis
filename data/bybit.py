@@ -1,32 +1,61 @@
 from datetime import datetime
+import requests
+import time
+from .utils import _bar_map
 
 
-_BASE_URL = 'https://public.bybit.com'
+_BASE_URL = 'https://api.bybit.com'
 
 
-def generate_url(pair: str, pair_type: str, date: datetime, period: str) -> str:
-    """
-    Generate the URL for downloading Bybit market data.
+def _bar_map(row: list):
+    return {
+        'time': int(row[0]),
+        'open': float(row[1]),
+        'high': float(row[2]),
+        'low': float(row[3]),
+        'close': float(row[4]),
+        'volume': float(row[5])
+    }
 
-    Args:
-        pair (str): The trading pair.
-        date (str): The date for the data.
-        pair_type (str): The type of pair ('spot' or 'futures').
-        period (str): The data period ('daily' or 'monthly').
 
-    Returns:
-        str: The generated URL.
-    """
+def download_bars(product: str, timeframe: str, symbol: str, start: datetime, end: datetime):
+    url = f'{_BASE_URL}/v5/market/kline'
 
-    n_pair_type = 'spot' if pair_type == 'spot' else 'trading'
-    ret = f'{_BASE_URL}/{n_pair_type}/{pair}/{pair}'
+    # Convert datetime to timestamp
+    start_timestamp = int(start.timestamp()) * 1000
+    end_timestamp = (int(end.timestamp()) - 1) * 1000  # Make end exclusive
 
-    date_str = date.strftime(
-        '%Y-%m-%d') if period == 'daily' else date.strftime('%Y-%m')
+    bars = []
+    while start_timestamp < end_timestamp:
+        response = requests.get(url, params={
+            'category': product,
+            'symbol': symbol,
+            'interval': timeframe,
+            'start': start_timestamp,
+            'end': end_timestamp,
+            'limit': 1000
+        })
 
-    if pair_type == 'futures':
-        ret += f'{date_str}.csv.gz'
-    else:
-        ret += f'_{date_str}.csv.gz'
+        if response.status_code != 200:
+            raise ValueError(response.status_code, response.content)
 
-    return ret
+        data = response.json()['result']['list']
+        bars.extend(data)
+
+        if len(data) < 1000:
+            break
+
+        end_timestamp = int(data[-1][0]) - 1000  # Avoid duplicates
+        time.sleep(0.5)  # Rate limit
+
+    return list(map(_bar_map, reversed(bars)))
+
+
+if __name__ == '__main__':
+    # Example usage
+    start = datetime(2021, 1, 1)
+    end = datetime(2021, 1, 2)
+    bars = download_bars('linear', '1', 'BTCUSD', start, end)
+
+    from pprint import pprint
+    print(bars)
