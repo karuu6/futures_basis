@@ -7,17 +7,6 @@ from .utils import _bar_map
 _BASE_URL = 'https://api.bybit.com'
 
 
-def _bar_map(row: list):
-    return {
-        'time': int(row[0]),
-        'open': float(row[1]),
-        'high': float(row[2]),
-        'low': float(row[3]),
-        'close': float(row[4]),
-        'volume': float(row[5])
-    }
-
-
 def download_bars(product: str, timeframe: str, symbol: str, start: datetime, end: datetime):
     url = f'{_BASE_URL}/v5/market/kline'
 
