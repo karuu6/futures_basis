@@ -17,7 +17,7 @@ pip install -r requirements.txt
 To download market data, use the `dl.py` script. Below is an example of how to use the script to fetch monthly futures trades from Binance:
 
 ```bash
-python dl.py binance -fum BTCUSDT futures 2024-11-01 daily market_data/
+python dl.py BTCUSDT 2024-11-01 2024-11-03 market_data binance 5m futures --type=um
 ```
 
 ### Example
@@ -25,5 +25,7 @@ python dl.py binance -fum BTCUSDT futures 2024-11-01 daily market_data/
 Fetch daily spot trades for ETHUSDT on Bybit
 
 ```bash
-python dl.py bybit ETHUSDT spot 2024-10-22 daily market_data/
+python dl.py ETHUSDT 2024-11-01 2024-11-03 market_data bybit 5m spot 
 ```
+
+Note that Bybit requires VPN for U.S. users
