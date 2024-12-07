@@ -36,14 +36,14 @@ def download_bars(product: str, timeframe: str, symbol: str, start: datetime, en
             raise ValueError(response.status_code, response.content)
 
         data = response.json()
-        bars.extend(reversed(data))
+        bars.extend(data)
 
         if len(data) < 1000:
             break
 
         start_timestamp = int(data[-1][0]) + 1000  # Avoid duplicates
         time.sleep(0.5)  # Rate limit
-    return list(map(_bar_map, reversed(bars)))
+    return list(map(_bar_map, bars))
 
 
 if __name__ == '__main__':
