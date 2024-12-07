@@ -2,7 +2,7 @@ import argparse
 import os
 import csv
 from data import binance, bybit
-from datetime import datetime
+from datetime import datetime, timezone
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -51,8 +51,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     try:
-        start = datetime.strptime(args.start, '%Y-%m-%d')
-        end = datetime.strptime(args.end, '%Y-%m-%d')
+        start = datetime.strptime(args.start, '%Y-%m-%d').replace(tzinfo=timezone.utc)
+        end = datetime.strptime(args.end, '%Y-%m-%d').replace(tzinfo=timezone.utc)
     except:
         parser.error('Invalid date format. Use YYYY-MM-DD')
 
